@@ -1,0 +1,44 @@
+---
+- name: Configure web server
+  hosts: web
+  become: true  # sudo
+  tasks:
+    - name: Update apt package cache
+      apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Install core packages
+      apt:
+        name:
+          - nginx
+          - git
+          - htop
+          - ufw
+        state: present
+
+    - name: Create deploy user
+      user:
+        name: deploy
+        shell: /bin/bash
+        groups: sudo
+        append: true
+
+    - name: Allow SSH and HTTP through the firewall
+      ufw:
+        rule: allow
+        name: "{{ item }}"
+      loop:
+        - OpenSSH
+        - "Nginx Full"
+
+    - name: Enable the firewall
+      ufw:
+        state: enabled
+        policy: deny
+
+    - name: Ensure nginx is running and enabled on boot
+      service:
+        name: nginx
+        state: started
+        enabled: true
