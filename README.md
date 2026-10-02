@@ -28,7 +28,6 @@ ok=7 changed=5 unreachable=0 failed=0
 **Second run**, no changes to the playbook or the server in between:
 ok=7 changed=0 unreachable=0 failed=0
 
-
 Every task correctly detected the target already matched the desired
 state and made no further changes — proof the playbook converges
 reliably rather than just re-running commands blindly.
